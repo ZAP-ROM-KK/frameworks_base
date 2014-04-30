@@ -311,6 +311,7 @@
 
     <!-- App Circle Bar -->
     <string name="app_stop_item_title">Kill app</string>
+    <string name="app_float_item_title">Float view</string>
 
     <!-- App Circle Bar Tile -->
     <string name="quick_settings_appcirclebar_on_label">App Circle Bar On</string>
