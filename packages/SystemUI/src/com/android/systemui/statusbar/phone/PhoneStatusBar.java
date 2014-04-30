@@ -1325,6 +1325,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             /* ZAPLab: GestureAnywhere - END */
         } else {
             addActiveDisplayView();
+            addAppCircleSidebar();
         }
 
         addSidebarView();

@@ -309,6 +309,9 @@
     <string name="network_3G">2G/3G Pref</string>
     <string name="network_2G">2G Only</string>
 
+    <!-- App Circle Bar -->
+    <string name="app_stop_item_title">Kill app</string>
+
     <!-- App Circle Bar Tile -->
     <string name="quick_settings_appcirclebar_on_label">App Circle Bar On</string>
     <string name="quick_settings_appcirclebar_off_label">App Circle Bar Off</string>
