@@ -3555,6 +3555,14 @@ public final class Settings {
         public static final String PIE_BUTTONS_CONFIG_SECOND_LAYER = "pie_buttons_config_second_layer";
 
         /**
+         * Pie trigger sensitivity
+         * Highest = 4, default = 2 and lowest = 1. Check your EdgeServiceConstants in
+         * com/android/internal/util/gesture/EdgeServiceConstants.java for the proper values.
+         * @hide
+         */
+        public static final String PIE_TRIGGER_SENSITIVITY = "pie_trigger_sensitivity";
+
+        /**
          * QuickSettings configuration
          * @hide
          */
@@ -8887,6 +8895,7 @@ public final class Settings {
                 "battery_saver_cpu_mode";
 
         /**
+         * SMOOTH PROGRESS BAR Mirror
          * @hide
          */
         public static final String BATTERY_SAVER_CPU_FREQ =
