@@ -300,4 +300,7 @@
   <java-symbol type="string" name="config_deviceKeyHandlerLib" />
   <java-symbol type="string" name="config_deviceKeyHandlerClass" />
 
+  <!-- Workaround for devices with broken keyboards -->
+  <java-symbol type="bool" name="config_forceDisableHardwareKeyboard" />
+
 </resources>
