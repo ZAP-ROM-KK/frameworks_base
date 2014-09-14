@@ -180,7 +180,7 @@
         <item name="android:textColor">@color/batterymeter_charge_color</item>
     </style>
 
-    <!-- OSE recents -->
+    <!-- ZAP-recents -->
     <style name="card.header_simple_title">
         <item name="android:textSize">@dimen/recent_text_size</item>
         <item name="android:fontFamily">sans-serif-condensed</item>

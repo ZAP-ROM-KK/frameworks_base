@@ -20,7 +20,7 @@ import android.content.res.Configuration;
 import android.os.SystemProperties;
 import android.util.Log;
 
-import com.android.internal.util.ose.DensityUtils;
+import com.android.internal.util.zap.DensityUtils;
 
 
 /**

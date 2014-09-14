@@ -112,11 +112,11 @@ public class Build {
         public static final String CODENAME = getString("ro.build.version.codename");
 
         /**
-         * The current version string that defines the ose version
+         * The current version string that defines the zap version
          * the device is on
          * @hide
          */
-        public static final String OSE = getString("ro.ose.version");
+        public static final String ZAP = getString("ro.zap.version");
 
         /**
          * The SDK version to use when accessing resources.

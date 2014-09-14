@@ -346,7 +346,7 @@ public final class PowerManagerService extends IPowerManager.Stub
     // The screen off timeout setting value in milliseconds.
     private int mScreenOffTimeoutSetting;
 
-    // OSE settings - override config for ElectronBeam
+    // ZAP settings - override config for ElectronBeam
     // used here to send values to DispLayPowerController handler
     // from SettingsObserver
     private int mElectronBeamMode;

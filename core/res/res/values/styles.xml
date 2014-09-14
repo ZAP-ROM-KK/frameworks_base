@@ -223,7 +223,7 @@ please see styles_device_defaults.xml.
         <item name="windowExitAnimation">@anim/shrink_fade_out_from_bottom</item>
     </style>
 
-    <!-- OSE recent app screen animation -->
+    <!-- ZAP-recent app screen animation -->
     <style name="Animation.RecentScreen">
         <item name="windowEnterAnimation">@anim/recent_screen_enter</item>
         <item name="windowExitAnimation">@anim/recent_screen_exit</item>

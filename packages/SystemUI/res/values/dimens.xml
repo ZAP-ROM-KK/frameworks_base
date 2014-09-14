@@ -258,7 +258,7 @@
     <dimen name="pie_sysinfo_second_layer_radius">255dp</dimen>
     <dimen name="pie_sysinfo_height">85sp</dimen>
 
-    <!-- OSE recent -->
+    <!-- ZAP-recent -->
     <dimen name="recent_width">230dp</dimen>
     <dimen name="recent_app_icon_size">48dp</dimen>
     <dimen name="recent_favorite_icon_size">18dp</dimen>

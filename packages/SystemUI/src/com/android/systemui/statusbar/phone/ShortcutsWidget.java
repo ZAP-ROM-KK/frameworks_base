@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 OSE Project
+ * Copyright (C) 2014 ZAP-ROM Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,10 +42,10 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.android.internal.util.ose.ButtonsHelper;
-import com.android.internal.util.ose.ButtonConfig;
-import com.android.internal.util.ose.ButtonsConstants;
-import com.android.internal.util.ose.ImageHelper;
+import com.android.internal.util.zap.ButtonsHelper;
+import com.android.internal.util.zap.ButtonConfig;
+import com.android.internal.util.zap.ButtonsConstants;
+import com.android.internal.util.zap.ImageHelper;
 
 import com.android.systemui.R;
 

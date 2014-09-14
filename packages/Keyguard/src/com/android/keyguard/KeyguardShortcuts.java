@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2012 ParanoidAndroid Project
- * Copyright (C) 2014 OSE Project
+ * Copyright (C) 2014 ZAP-ROM Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,12 +37,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.internal.R;
-import com.android.internal.util.ose.AppHelper;
-import com.android.internal.util.ose.ButtonsHelper;
-import com.android.internal.util.ose.ButtonConfig;
-import com.android.internal.util.ose.DeviceUtils;
-import com.android.internal.util.ose.LockscreenTargetUtils;
-import com.android.internal.util.ose.OSEActions;
+import com.android.internal.util.zap.AppHelper;
+import com.android.internal.util.zap.ButtonsHelper;
+import com.android.internal.util.zap.ButtonConfig;
+import com.android.internal.util.zap.DeviceUtils;
+import com.android.internal.util.zap.LockscreenTargetUtils;
+import com.android.internal.util.zap.ZAPActions;
 import com.android.internal.widget.LockPatternUtils;
 
 import java.net.URISyntaxException;
@@ -117,7 +117,7 @@ public class KeyguardShortcuts extends LinearLayout {
                     @Override
                     public boolean onLongClick(View v) {
                         doHapticKeyClick(HapticFeedbackConstants.LONG_PRESS);
-                        OSEActions.processAction(mContext, action, true);
+                        ZAPActions.processAction(mContext, action, true);
                         return true;
                     }
                 });
@@ -126,7 +126,7 @@ public class KeyguardShortcuts extends LinearLayout {
                     @Override
                     public void onClick(View v) {
                         doHapticKeyClick(HapticFeedbackConstants.VIRTUAL_KEY);
-                        OSEActions.processAction(mContext, action, false);
+                        ZAPActions.processAction(mContext, action, false);
                     }
                 });
             }

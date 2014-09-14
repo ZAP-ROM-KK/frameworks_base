@@ -81,9 +81,9 @@ import android.widget.Toast;
 import com.android.internal.R;
 import com.android.internal.notification.NotificationScorer;
 import com.android.internal.util.FastXmlSerializer;
-import com.android.internal.util.ose.SpamFilter;
-import com.android.internal.util.ose.SpamFilter.SpamContract.NotificationTable;
-import com.android.internal.util.ose.SpamFilter.SpamContract.PackageTable;
+import com.android.internal.util.zap.SpamFilter;
+import com.android.internal.util.zap.SpamFilter.SpamContract.NotificationTable;
+import com.android.internal.util.zap.SpamFilter.SpamContract.PackageTable;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

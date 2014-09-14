@@ -107,10 +107,10 @@ import com.android.internal.policy.impl.keyguard.KeyguardServiceDelegate;
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.telephony.ITelephony;
 import com.android.internal.util.gesture.EdgeGesturePosition;
-import com.android.internal.util.ose.ButtonsConstants;
-import com.android.internal.util.ose.Converter;
-import com.android.internal.util.ose.HwKeyHelper;
-import com.android.internal.util.ose.OSEActions;
+import com.android.internal.util.zap.ButtonsConstants;
+import com.android.internal.util.zap.Converter;
+import com.android.internal.util.zap.HwKeyHelper;
+import com.android.internal.util.zap.ZAPActions;
 import com.android.internal.widget.PointerLocationView;
 
 import java.io.File;
@@ -3030,7 +3030,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // Reset the check flag for preloading to give it free
         // for next preload call.
         mPreloadedRecentApps = false;
-        OSEActions.processAction(mContext, action, false);
+        ZAPActions.processAction(mContext, action, false);
     }
 
     /** {@inheritDoc} */
@@ -4618,7 +4618,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 return;
             }
             ComponentName cn = new ComponentName("com.android.systemui",
-                    "com.android.systemui.ose.screenrecord.TakeScreenrecordService");
+                    "com.android.systemui.zap.screenrecord.TakeScreenrecordService");
             Intent intent = new Intent();
             intent.setComponent(cn);
             ServiceConnection conn = new ServiceConnection() {

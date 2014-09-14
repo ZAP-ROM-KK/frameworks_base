@@ -43,7 +43,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 
-import com.android.internal.util.ose.DevUtils;
+import com.android.internal.util.zap.DevUtils;
 
 import com.android.systemui.R;
 

@@ -51,7 +51,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.systemui.R;
-import com.android.systemui.ose.TriggerOverlayView;
+import com.android.systemui.zap.TriggerOverlayView;
 import com.android.systemui.statusbar.sidebar.*;
 
 import java.util.ArrayList;

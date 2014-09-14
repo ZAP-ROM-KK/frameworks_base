@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 OSE Project
+ * Copyright (C) 2014 ZAP-ROM Project
  * This code is loosely based on portions of the CyanogenMod Project (Jens Doll) Copyright (C) 2013
  * and the ParanoidAndroid Project source, Copyright (C) 2012.
  *
@@ -33,7 +33,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.android.internal.util.gesture.EdgeGesturePosition;
-import com.android.internal.util.ose.ImageHelper;
+import com.android.internal.util.zap.ImageHelper;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.pie.PieView.PieDrawable;

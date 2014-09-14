@@ -20,7 +20,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.DisplayMetrics;
 
-import com.android.internal.util.ose.DensityUtils;
+import com.android.internal.util.zap.DensityUtils;
 
 import java.io.OutputStream;
 import java.nio.Buffer;

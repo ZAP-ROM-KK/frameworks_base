@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*
-** Copyright 2014, OSE Project
+** Copyright 2014, ZAP-ROM Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -23,11 +23,11 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <com.android.systemui.oserecent.RecentImageView
+    <com.android.systemui.zaprecent.RecentImageView
         android:id="@+id/card_thumbnail_image"
         style="@style/card.card_header_app_icon"/>
 
-    <com.android.systemui.oserecent.RecentImageView
+    <com.android.systemui.zaprecent.RecentImageView
         android:id="@+id/card_thumbnail_favorite"
         android:src="@drawable/ic_recent_favorite"
         android:layout_toEndOf="@id/card_thumbnail_image"

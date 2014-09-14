@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 OSE Project
+ * Copyright 2014 ZAP-ROM Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.android.internal.util.ose.ButtonsConstants;
-import com.android.internal.util.ose.OSEActions;
+import com.android.internal.util.zap.ButtonsConstants;
+import com.android.internal.util.zap.ZAPActions;
 
 public class LastApp extends Activity  {
 
@@ -33,7 +33,7 @@ public class LastApp extends Activity  {
     @Override
     public void onResume() {
         super.onResume();
-        OSEActions.processAction(
+        ZAPActions.processAction(
                 this, ButtonsConstants.ACTION_LAST_APP, false);
         this.finish();
     }

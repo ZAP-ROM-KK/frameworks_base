@@ -17,7 +17,7 @@
 package android.content.res;
 
 import android.app.ComposedIconInfo;
-import com.android.internal.util.ose.DensityUtils;
+import com.android.internal.util.zap.DensityUtils;
 import android.app.IconPackHelper;
 import com.android.internal.util.XmlUtils;
 

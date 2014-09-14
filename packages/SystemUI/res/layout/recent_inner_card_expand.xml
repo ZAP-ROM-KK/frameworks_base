@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*
-** Copyright 2014, OSE Project
+** Copyright 2014, ZAP-ROM Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
-    <com.android.systemui.oserecent.RecentImageView
+    <com.android.systemui.zaprecent.RecentImageView
         android:id="@+id/thumbnail"
         android:layout_width="@dimen/recent_thumbnail_width"
         android:layout_height="@dimen/recent_thumbnail_height"

@@ -17,7 +17,7 @@ package com.android.systemui.batterysaver;
 
 import android.content.Context;
 import android.util.Log;
-import com.android.internal.util.ose.TaskUtils;
+import com.android.internal.util.zap.TaskUtils;
 
 import com.android.systemui.R;
 

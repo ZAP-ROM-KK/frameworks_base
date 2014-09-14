@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 OSE Project
+ * Copyright 2014 ZAP-ROM Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.UserHandle;
 
-import com.android.internal.util.ose.TorchConstants;
+import com.android.internal.util.zap.TorchConstants;
 
 public class Torch extends Activity  {
 

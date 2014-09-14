@@ -78,18 +78,18 @@ import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.internal.util.ose.NamelessActions;
+import com.android.internal.util.zap.NamelessActions;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import com.android.internal.statusbar.IStatusBarService;
-import com.android.internal.util.ose.ButtonConfig;
-import com.android.internal.util.ose.ImageHelper;
-import com.android.internal.util.ose.PolicyConstants;
-import com.android.internal.util.ose.PolicyHelper;
-import com.android.internal.util.ose.OSEActions;
+import com.android.internal.util.zap.ButtonConfig;
+import com.android.internal.util.zap.ImageHelper;
+import com.android.internal.util.zap.PolicyConstants;
+import com.android.internal.util.zap.PolicyHelper;
+import com.android.internal.util.zap.ZAPActions;
 
 /**
  * Helper to show the global actions dialog.  Each item is an {@link Action} that
@@ -403,7 +403,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                             config.getClickAction(), config.getIcon(), true),
                             config.getClickActionDescription()) {
                         public void onPress() {
-                            OSEActions.processAction(
+                            ZAPActions.processAction(
                                 mContext, config.getClickAction(), false);
                         }
 
@@ -448,7 +448,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                             config.getClickAction(), config.getIcon(), true),
                             config.getClickActionDescription()) {
                         public void onPress() {
-                            OSEActions.processAction(
+                            ZAPActions.processAction(
                                 mContext, config.getClickAction(), false);
                         }
 
@@ -548,7 +548,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 R.string.global_actions_expanded_desktop_mode_off_status) {
 
             void onToggle(boolean on) {
-                OSEActions.processAction(
+                ZAPActions.processAction(
                     mContext, PolicyConstants.ACTION_EXPANDED_DESKTOP, false);
             }
 
@@ -572,7 +572,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 R.string.global_actions_pie_mode_off_status) {
 
             void onToggle(boolean on) {
-                OSEActions.processAction(
+                ZAPActions.processAction(
                     mContext, PolicyConstants.ACTION_PIE, false);
             }
 
@@ -596,7 +596,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                 R.string.global_actions_nav_bar_mode_off_status) {
 
             void onToggle(boolean on) {
-                OSEActions.processAction(
+                ZAPActions.processAction(
                     mContext, PolicyConstants.ACTION_NAVBAR, false);
             }
 
@@ -701,7 +701,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
     private void startOnTheGo() {
         final ComponentName cn = new ComponentName("com.android.systemui",
-                "com.android.systemui.ose.onthego.OnTheGoService");
+                "com.android.systemui.zap.onthego.OnTheGoService");
         final Intent startIntent = new Intent();
         startIntent.setComponent(cn);
         startIntent.setAction("start");

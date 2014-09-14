@@ -145,13 +145,13 @@
 
         <!-- started from PhoneWindowManager
              TODO: Should have an android:permission attribute -->
-        <service android:name=".ose.screenrecord.TakeScreenrecordService"
+        <service android:name=".zap.screenrecord.TakeScreenrecordService"
             android:process=":screenrecord"
             android:exported="false" />
 
         <!-- started from PhoneWindowManager
              TODO: Should have an android:permission attribute -->
-        <service android:name=".ose.onthego.OnTheGoService"
+        <service android:name=".zap.onthego.OnTheGoService"
             android:process=":onthego"
             android:exported="false" />
 
@@ -312,7 +312,7 @@
             </intent-filter>
         </activity>
 
-        <!-- OSE shortcut picker -->
+        <!-- ZAP shortcut picker -->
         <activity
             android:name="com.android.systemui.CreateShortcut"
             android:label="@string/shortcut_picker"
@@ -550,10 +550,10 @@
                   android:theme="@style/Theme.DummyActivity">
         </activity>
 
-        <provider android:name=".ose.SpamMessageProvider"
+        <provider android:name=".zap.SpamMessageProvider"
                   android:permission="android.permission.INTERACT_ACROSS_USERS_FULL"
                   android:exported="true"
-                  android:authorities="com.ose.spam" />
+                  android:authorities="com.zap.spam" />
 
     </application>
 </manifest>

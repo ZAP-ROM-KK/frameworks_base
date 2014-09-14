@@ -53,7 +53,7 @@ import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.internal.R;
-import com.android.internal.util.ose.ImageHelper;
+import com.android.internal.util.zap.ImageHelper;
 
 import java.lang.Math;
 import java.util.ArrayList;

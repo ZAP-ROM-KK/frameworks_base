@@ -44,7 +44,7 @@ import android.widget.Toast;
 public class PlatLogoActivity extends Activity {
     FrameLayout mContent;
     int mCount;
-    private boolean mIsOSE;
+    private boolean mIsZAP;
     final Handler mHandler = new Handler();
     static final int BGCOLOR = 0xffed1d24;
 
@@ -87,7 +87,7 @@ public class PlatLogoActivity extends Activity {
 
         final TextView tv = new TextView(this);
 
-        mIsOSE = SystemProperties.get("ro.ose.version") != null;
+        mIsZAP = SystemProperties.get("ro.zap.version") != null;
 
         if (light != null) tv.setTypeface(light);
         tv.setTextSize(30);
@@ -95,7 +95,7 @@ public class PlatLogoActivity extends Activity {
         tv.setTextColor(0xFFFFFFFF);
         tv.setGravity(Gravity.CENTER);
         tv.setTransformationMethod(new AllCapsTransformationMethod(this));
-        tv.setText((mIsOSE ? "OSE " : "Android ") + Build.VERSION.RELEASE);
+        tv.setText((mIsZAP ? "ZAP " : "Android ") + Build.VERSION.RELEASE);
         tv.setVisibility(View.INVISIBLE);
 
         mContent.addView(bg);
