@@ -2704,6 +2704,12 @@ public final class Settings {
         public static final String LOCKSCREEN_DISABLED = "lockscreen.disabled";
 
         /**
+         * Position of App Circle Bar trigger.  Value is either Gravity.LEFT or Gravity.RIGHT
+         * @hide
+         */
+        public static final String APP_CIRCLE_BAR_POSITION = "app_circle_bar_position";
+
+        /**
          * Whether to display app circle sidebar
          * @hide
          */

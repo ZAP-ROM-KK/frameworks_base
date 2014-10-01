@@ -140,6 +140,8 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.WHITELIST_APP_CIRCLE_BAR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.APP_CIRCLE_BAR_POSITION), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.APP_CIRCLE_BAR_TRIGGER_WIDTH), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.APP_CIRCLE_BAR_TRIGGER_TOP), false, this);
@@ -167,6 +169,11 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
             String includedApps = Settings.System.getStringForUser(resolver,
                     Settings.System.WHITELIST_APP_CIRCLE_BAR,
                     UserHandle.USER_CURRENT_OR_SELF);
+
+            int position = Settings.System.getInt(
+                    resolver, Settings.System.APP_CIRCLE_BAR_POSITION, Gravity.RIGHT);
+            setPosition(position);
+
             if (mPackageAdapter != null) {
                 mPackageAdapter.createIncludedAppsSet(includedApps);
                 mPackageAdapter.reloadApplications();
@@ -180,8 +187,9 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
                     resolver, Settings.System.APP_CIRCLE_BAR_TRIGGER_TOP, 0) / 100f);
             setBottomPercentage(Settings.System.getInt(
                     resolver, Settings.System.APP_CIRCLE_BAR_TRIGGER_HEIGHT, 100) / 100f);
-            if (Settings.System.getInt(
-                    resolver, Settings.System.APP_CIRCLE_BAR_SHOW_TRIGGER, 0) == 1)
+            mTriggerVisible = Settings.System.getInt(
+                    resolver, Settings.System.APP_CIRCLE_BAR_SHOW_TRIGGER, 0) == 1;
+            if (mTriggerVisible)
                 showTriggerRegion();
             else
                 hideTriggerRegion();
