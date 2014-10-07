@@ -15,9 +15,7 @@ import android.content.pm.ResolveInfo;
 import android.database.ContentObserver;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.IBinder;
 import android.os.Handler;
-import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -25,16 +23,15 @@ import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.view.WindowManager;
 import android.widget.*;
 
-import com.android.systemui.zap.TriggerOverlayView;
 import com.android.systemui.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
-public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapter.OnCircleItemClickListener,
+public class AppCircleSidebar extends FrameLayout implements PackageAdapter.OnCircleItemClickListener,
                             CircleListView.OnItemCenteredListener {
     private static final String TAG = "AppCircleSidebar";
     private static final boolean DEBUG_LAYOUT = false;
@@ -55,12 +52,11 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
     private boolean mFirstTouch = false;
     private boolean mFloatingWindow = false;
     private SettingsObserver mSettingsObserver;
-    private List<FloatingTaskInfo> mAppRunning;
+    private ArrayList<String> mAppRunning;
+    private ArrayList<String> mAppOpening;
 
     private PopupMenu mPopup;
-    private PopupMenu mPopupMax;
     private WindowManager mWM;
-    private AlarmManager mAM;
 
     public AppCircleSidebar(Context context) {
         this(context, null);
@@ -75,7 +71,6 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
         mTriggerWidth = context.getResources().getDimensionPixelSize(R.dimen.app_sidebar_trigger_width);
         mContext = context;
         mWM = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        mAM = (AlarmManager)mContext.getSystemService(Context.ALARM_SERVICE);
     }
 
     @Override
@@ -94,7 +89,7 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
         filter.addDataScheme("package");
-        mContext.registerReceiver(mAppChangeReceiver, filter);
+        getContext().registerReceiver(mAppChangeReceiver, filter);
 
         mCircleListView = (CircleListView) findViewById(R.id.circle_list);
         mPackageAdapter = new PackageAdapter(mContext);
@@ -106,7 +101,8 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
         mCircleListView.setVisibility(View.GONE);
         createAnimatimations();
         mSettingsObserver = new SettingsObserver(new Handler());
-        mAppRunning = new ArrayList<FloatingTaskInfo>();
+        mAppRunning = new ArrayList<String>();
+        mAppOpening = new ArrayList<String>();
     }
 
     @Override
@@ -139,14 +135,6 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
                     Settings.System.ENABLE_APP_CIRCLE_BAR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.WHITELIST_APP_CIRCLE_BAR), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.APP_CIRCLE_BAR_TRIGGER_WIDTH), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.APP_CIRCLE_BAR_TRIGGER_TOP), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.APP_CIRCLE_BAR_TRIGGER_HEIGHT), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.APP_CIRCLE_BAR_SHOW_TRIGGER), false, this);
             update();
         }
 
@@ -171,20 +159,6 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
                 mPackageAdapter.createIncludedAppsSet(includedApps);
                 mPackageAdapter.reloadApplications();
             }
-
-            int width = Settings.System.getInt(
-                    resolver, Settings.System.APP_CIRCLE_BAR_TRIGGER_WIDTH, 10);
-            if (mTriggerWidth != width)
-                setTriggerWidth(width);
-            setTopPercentage(Settings.System.getInt(
-                    resolver, Settings.System.APP_CIRCLE_BAR_TRIGGER_TOP, 0) / 100f);
-            setBottomPercentage(Settings.System.getInt(
-                    resolver, Settings.System.APP_CIRCLE_BAR_TRIGGER_HEIGHT, 100) / 100f);
-            if (Settings.System.getInt(
-                    resolver, Settings.System.APP_CIRCLE_BAR_SHOW_TRIGGER, 0) == 1)
-                showTriggerRegion();
-            else
-                hideTriggerRegion();
         }
     }
 
@@ -255,6 +229,28 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
         return super.dispatchKeyEventPreIme(event);
     }
 
+    private int enableKeyEvents() {
+        return (0
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH);
+    }
+
+    private int disableKeyEvents() {
+        return (0
+                | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING
+                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH);
+    }
+
+    private int getWindowHeight() {
+        Rect r = new Rect();
+        getWindowVisibleDisplayFrame(r);
+        return r.bottom - r.top;
+    }
+
     private void expandFromRegion() {
         WindowManager.LayoutParams params = (WindowManager.LayoutParams) getLayoutParams();
         params.y = 0;
@@ -262,6 +258,15 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
         params.width = LayoutParams.WRAP_CONTENT;
         params.flags = enableKeyEvents();
         mWM.updateViewLayout(this, params);
+    }
+
+    private void reduceToRegion() {
+        WindowManager.LayoutParams params = (WindowManager.LayoutParams) getLayoutParams();
+        params.y = 0;
+        params.height = (getWindowHeight() / 2);
+        params.width = mTriggerWidth;
+        params.flags = disableKeyEvents();
+        mWM.updateViewLayout(this, mLayoutParams);
     }
 
     private TranslateAnimation mSlideOut = new TranslateAnimation(
@@ -292,9 +297,6 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
             if (mPopup != null) {
                 mPopup.dismiss();
             }
-            if (mPopupMax != null) {
-                mPopupMax.dismiss();
-            }
             cancelAutoHideTimer();
         }
         mCircleListView.startAnimation(show ? mSlideIn : mSlideOut);
@@ -313,7 +315,7 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
                 case CLOSING:
                     mState = SIDEBAR_STATE.CLOSED;
                     mCircleListView.setVisibility(View.GONE);
-                    reduceToTriggerRegion();
+                    reduceToRegion();
                     break;
                 case OPENING:
                     mState = SIDEBAR_STATE.OPENED;
@@ -327,25 +329,34 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
         }
     };
 
-    private void updateAutoHideTimer(long delay) {
+    private boolean isKeyguardEnabled() {
+        KeyguardManager km = (KeyguardManager)mContext.getSystemService(Context.KEYGUARD_SERVICE);
+        return km.inKeyguardRestrictedInputMode();
+    }
+
+    public void updateAutoHideTimer(long delay) {
+        Context ctx = getContext();
+        AlarmManager am = (AlarmManager)ctx.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(ACTION_HIDE_APP_CONTAINER);
 
-        PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pi = PendingIntent.getBroadcast(ctx, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
         try {
-            mAM.cancel(pi);
+            am.cancel(pi);
         } catch (Exception e) {
         }
         Calendar time = Calendar.getInstance();
         time.setTimeInMillis(System.currentTimeMillis() + delay);
-        mAM.set(AlarmManager.RTC, time.getTimeInMillis(), pi);
+        am.set(AlarmManager.RTC, time.getTimeInMillis(), pi);
     }
 
-    private void cancelAutoHideTimer() {
+    public void cancelAutoHideTimer() {
+        Context ctx = getContext();
+        AlarmManager am = (AlarmManager)ctx.getSystemService(Context.ALARM_SERVICE);
         Intent i = new Intent(ACTION_HIDE_APP_CONTAINER);
 
-        PendingIntent pi = PendingIntent.getBroadcast(mContext, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pi = PendingIntent.getBroadcast(ctx, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
         try {
-            mAM.cancel(pi);
+            am.cancel(pi);
         } catch (Exception e) {
         }
     }
@@ -374,32 +385,24 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
                 showAppContainer(false);
             } else if (action.equals(Intent.ACTION_ACTIVITY_LAUNCH_DETECTOR)) {
                 String packageName = intent.getStringExtra("packagename");
-                IBinder packageToken = (IBinder) intent.getExtra("packagetoken");
-                if (packageName == null) {
-                    return;
-                }
-                if (!getAppFloatingInfo(packageName)) {
-                    FloatingTaskInfo taskInfo = new FloatingTaskInfo();
-                    taskInfo.packageName = packageName;
-                    taskInfo.packageToken = packageToken;
-                    mAppRunning.add(taskInfo);
+                if (!mAppRunning.contains(packageName)) {
+                    mAppRunning.add(packageName);
                 }
             } else if (action.equals(Intent.ACTION_ACTIVITY_END_DETECTOR)) {
                 String packageName = intent.getStringExtra("packagename");
-                if (packageName == null) {
-                    return;
-                }
-                if (getAppFloatingInfo(packageName)) {
-                    FloatingTaskInfo taskInfo = getFloatingInfo(packageName);
-                    if (taskInfo != null) {
-                        mAppRunning.remove(taskInfo);
-                    }
+                if (!mAppRunning.isEmpty() && mAppRunning.contains(packageName)) {
+                    mAppRunning.remove(packageName);
+                } else if (!mAppOpening.isEmpty() && mAppOpening.contains(packageName)) {
+                    mAppRunning.remove(packageName);
                 }
             }
         }
     };
 
     private void launchApplication(String packageName, String className) {
+        if (!mAppOpening.contains(packageName)) {
+            mAppOpening.add(packageName);
+        }
         updateAutoHideTimer(500);
         ComponentName cn = new ComponentName(packageName, className);
         Intent intent = Intent.makeMainActivity(cn);
@@ -407,21 +410,25 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
         if (mFloatingWindow) {
             intent.addFlags(Intent.FLAG_FLOATING_WINDOW);
             mFloatingWindow = false;
-        } else {
-            intent.setFlags(intent.getFlags() & ~Intent.FLAG_FLOATING_WINDOW);
         }
         mContext.startActivity(intent);
     }
 
-    private void launchApplicationFromHistory(String packageName) {
-        if (getAppFloatingInfo(packageName)) {
+    private void launchApplicationFromHistory(String packageName, String className) {
+        if (!mAppOpening.isEmpty() && mAppOpening.contains(packageName)) {
             updateAutoHideTimer(500);
-            FloatingTaskInfo taskInfo = getFloatingInfo(packageName);
-            if (taskInfo != null) {
-                updateMaximizeApp(taskInfo.packageToken);
+            ComponentName cn = new ComponentName(packageName, className);
+            Intent intent = Intent.makeMainActivity(cn);
+            intent.setFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY
+                           | Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (mFloatingWindow) {
+                intent.addFlags(Intent.FLAG_FLOATING_WINDOW);
+                mFloatingWindow = false;
             }
+            mContext.startActivity(intent);
         } else {
             updateAutoHideTimer(AUTO_HIDE_DELAY);
+            mFloatingWindow = false;
         }
     }
 
@@ -431,49 +438,20 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
        am.forceStopPackage(packageName);
     }
 
-    @Override
     public void onItemCentered(View v) {
         if (v != null) {
             final int position = (Integer) v.getTag(R.id.key_position);
             final ResolveInfo info = (ResolveInfo) mPackageAdapter.getItem(position);
             if (info != null) {
-                final String packageName = info.activityInfo.packageName;
-                if (!getAppFloatingInfo(packageName)) {
-                    updateAutoHideTimer(AUTO_HIDE_DELAY);
-                    return;
+                String packageName = info.activityInfo.packageName;
+                if (!mAppRunning.isEmpty() && mAppRunning.contains(packageName)) {
+                    mFloatingWindow = true;
+                    launchApplicationFromHistory(info.activityInfo.packageName, info.activityInfo.name);
                 }
-                final PopupMenu popup = new PopupMenu(mContext, v);
-                mPopupMax = popup;
-                popup.getMenuInflater().inflate(R.menu.sidebar_maximize_popup_menu,
-                      popup.getMenu());
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.sidebar_maximize_item) {
-                            mFloatingWindow = true;
-                            launchApplicationFromHistory(packageName);
-                        } else if (item.getItemId() == R.id.sidebar_maximize_stop_item) {
-                            FloatingTaskInfo taskInfo = getFloatingInfo(packageName);
-                            if (taskInfo != null) {
-                                mAppRunning.remove(taskInfo);
-                            }
-                            killApp(packageName);
-                        } else {
-                            return false;
-                        }
-                        return true;
-                    }
-                });
-                popup.setOnDismissListener(new PopupMenu.OnDismissListener() {
-                    public void onDismiss(PopupMenu menu) {
-                        mPopupMax = null;
-                    }
-                });
-                popup.show();
             }
         }
     }
 
-    @Override
     public boolean onItemTouchCenteredEvent(MotionEvent ev) {
         int action = ev.getAction();
         if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
@@ -486,7 +464,6 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
         return true;
     }
 
-    @Override
     public void onClick(final View v, final BaseAdapter adapter) {
 
         final int position = (Integer) v.getTag(R.id.key_position);
@@ -501,13 +478,11 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
         }
     }
 
-    @Override
     public void onLongClick(final View v, final BaseAdapter adapter) {
 
         final int position = (Integer) v.getTag(R.id.key_position);
         final ResolveInfo info = (ResolveInfo) adapter.getItem(position);
         if (info != null) {
-            final String packageName = info.activityInfo.packageName;
             final PopupMenu popup = new PopupMenu(mContext, v);
             mPopup = popup;
             popup.getMenuInflater().inflate(R.menu.sidebar_popup_menu,
@@ -516,15 +491,11 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
                 public boolean onMenuItemClick(MenuItem item) {
                     if (item.getItemId() == R.id.sidebar_float_item) {
                         mFloatingWindow = true;
-                        launchApplication(packageName, info.activityInfo.name);
+                        launchApplication(info.activityInfo.packageName, info.activityInfo.name);
                     } else if (item.getItemId() == R.id.sidebar_inspect_item) {
-                        startApplicationDetailsActivity(packageName);
+                        startApplicationDetailsActivity(info.activityInfo.packageName);
                     } else if (item.getItemId() == R.id.sidebar_stop_item) {
-                        FloatingTaskInfo taskInfo = getFloatingInfo(packageName);
-                        if (taskInfo != null) {
-                            mAppRunning.remove(taskInfo);
-                        }
-                        killApp(packageName);
+                        killApp(info.activityInfo.packageName);
                     } else {
                         return false;
                     }
@@ -549,36 +520,5 @@ public class AppCircleSidebar extends TriggerOverlayView implements PackageAdapt
         TaskStackBuilder.create(mContext)
                 .addNextIntentWithParentStack(intent).startActivities();
         showAppContainer(false);
-    }
-
-    private void updateMaximizeApp(IBinder token) {
-        IWindowManager wm = (IWindowManager) WindowManagerGlobal.getWindowManagerService();
-        try {
-             wm.notifyFloatActivityTouched(token, false);
-        } catch (RemoteException e) {
-        }
-    }
-
-    private FloatingTaskInfo getFloatingInfo(String packageName) {
-        for (FloatingTaskInfo taskInfo : mAppRunning) {
-            if (packageName.equals(taskInfo.packageName)) {
-                return taskInfo;
-            }
-        }
-        return null;
-    }
-
-    private boolean getAppFloatingInfo(String packageName) {
-        for (FloatingTaskInfo taskInfo : mAppRunning) {
-            if (packageName.equals(taskInfo.packageName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public class FloatingTaskInfo {
-        public IBinder packageToken;
-        public String packageName;
     }
 }
