@@ -1318,14 +1318,14 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             }
         });
 
-        if (!mRecreating) {
+        if (mRecreating) {
             removeSidebarView();
-            /* ZAPLab: GestureAnywhere - BEGIN */
-            addGestureAnywhereView();
-            /* ZAPLab: GestureAnywhere - END */
         } else {
             addActiveDisplayView();
             addAppCircleSidebar();
+            /* ZAPLab: GestureAnywhere - BEGIN */
+            addGestureAnywhereView();
+            /* ZAPLab: GestureAnywhere - END */
         }
 
         addSidebarView();
